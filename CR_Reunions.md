@@ -9,9 +9,15 @@ Front:
 On récupère la liste des leds que si on indique en dur le ruban que l'on souhaite afficher
 
 Back:
-1) Organisation du back
+1) Organisation du back et présentation à Joane
 2) Création DAO BDD (à voir si nécessaire)
 3) Développement de la liaison série avec l'Arduino pour le pilotage des Leds
+
+-----------
+31/01/2018
+ODJ : Dev front et back
+--
+poursuite des devs 
 
 -----------
 17/01/2018
