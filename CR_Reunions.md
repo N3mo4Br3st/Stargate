@@ -1,4 +1,19 @@
 -----------
+14/02/2018
+ODJ : Dev front et back
+--
+
+Front:
+1) Lors de la sélection d'un ruban, affichage de la liste des leds affectées au ruban.
+2) Problème lors de la sélection d'un ruban, on ne récupére aucune led. 
+On récupère la liste des leds que si on indique en dur le ruban que l'on souhaite afficher
+
+Back:
+1) Organisation du back
+2) Création DAO BDD (à voir si nécessaire)
+3) Développement de la liaison série avec l'Arduino pour le pilotage des Leds
+
+-----------
 17/01/2018
 ODJ : Dev front et back
 --
