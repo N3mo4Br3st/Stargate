@@ -1,4 +1,21 @@
 -----------
+07/03/2018
+ODJ : Dev front et back
+--
+
+Front:
+1) Correction du problème lors de la sélection d'un ruban qui ne récupérait aucune led.
+2) Début des dev pour la gestion de couleur des led.
+3) Intégration de Brice au projet qui a commencer à voir pour une liste multi-sélection pour les led.
+
+Back:
+1) Définition des différentes informations a stocker.
+2) Réflexion sur les moyens de stockage.
+3) Suite du développement de la liaison série avec l'Arduino pour le pilotage des Leds avec la définition du protocol
+de dialogue entre le back et l'arduino (cf mise à jour du CDC).
+
+
+-----------
 14/02/2018
 ODJ : Dev front et back
 --
