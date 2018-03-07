@@ -34,6 +34,27 @@ L’arduino n’aura qu’un rôle d’affichage.
 
 - Gestion du port série sur l'arduino comment ça marche : https://zestedesavoir.com/tutoriels/686/arduino-premiers-pas-en-informatique-embarquee/744_la-communication-avec-arduino/3427_envoyer-et-recevoir-des-donnees-sur-la-voie-serie/
 
+PROTOCOL de dialogue:
+
+1) M0 - Programmation direct:
+    M0-RAZ:
+      M0-RAZ-P0               => raz toutes les leds de la porte
+      M0-RAZ-P1(x)            => raz de toutes les leds du bandeau x
+      M0-RAZ-P2(x)[i1,i2,...] => raz des leds i1,i2,... du bandeau x
+    M0-COL:
+      M0-COL-P0RaVbBb                => couleur en RVB de toutes les leds de la porte avec a,b et c compris entre 0 et 255
+      M0-COL-P1(x)RaVbBb             => couleur en RVB de toutes les leds du bandeau x avec a,b et c compris entre 0 et 255
+      M0-COL-P2(x)[i1,i2,...]RaVbBb  => couleur en RVB des leds i1,i2,... du bandeau x avec a,b et c compris entre 0 et 255
+    M0-AFF:   
+      M0-AFF-P0     => affichage de toutes les leds de la porte
+      M0-AFF-P1(x)  => affichage de toutes les leds du bandeau x
+
+2) M1 - Programmation prédéfinie:
+    M1-SEQ-CHV(x)                     => lance la séquence d'activation du chevron x 
+              (-GLY(y) prévoir de passer un glyph en param pour s'arreter dessus )
+    M1-SEQ-HZN(p)                     => lance la seqence de l'horizon des événements avec le profil p (a mapper en dur)
+    M1-PAL-HNZ[couleur1,couleur,...]  => modifier la palette de couleur pour l'horizon des événements
+    
 Partie 2 - Back 
 --
 Back si possible en java et serveur web à définir
