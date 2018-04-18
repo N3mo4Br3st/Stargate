@@ -85,6 +85,7 @@ la première IHM:
   - un bouton d'envoi => fait soit:
      * un (Post) /stargate/bandeau/<n°du bandeau> {R=[0-255],V=[0-255],B=[0-255]} si "toutes" est sélectionné dans la liste de leds
      * un (Post) /stargate/bandeau/<n°du bandeau>/led/<n°led> {R=[0-255],V=[0-255],B=[0-255]} si une led est sélectionné dans la liste de leds
+     
 IHM 1.5 :
 première IHM avec une gestion d'enregistrement de séquences:
    - une liste de sequences , avec choix unique qui charge l'état des led de la séquence
