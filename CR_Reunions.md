@@ -7,6 +7,7 @@ Front:
 1) Correction de bug
 2) Première version OK 
 3) Présentation de cette version mocké (cf fichier : front_stargate_V01.01.png )
+4) Reflexion sur l'ajout et stockage de séquences (timeline + enregistrement de l'état des led dans la séquence + liste séquences) 
 
 
 Back:
