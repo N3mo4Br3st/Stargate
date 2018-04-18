@@ -1,4 +1,19 @@
 -----------
+18/04/2018
+ODJ : Dev front et back
+--
+
+Front:
+1) Correction de bug
+2) Première version OK 
+3) Présentation de cette version mocké (cf fichier : front_stargate_V01.01.png )
+
+
+Back:
+1) Suite du développement de la liaison série avec l'Arduino pour le pilotage des Leds.
+2) Création DAO de communication avec l'Arduino et son interface.
+
+-----------
 11/04/2018
 Annulé pour cause de formations
 --
