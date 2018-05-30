@@ -1,4 +1,17 @@
 -----------
+30/05/2018
+ODJ : Point d'avancement
+--
+Point d'avancement et prochaines fonctionnalités a implémenter:
+1) Intégration de Killian au projet.
+1) Présentation de l'ihm crée sur http://ai2.appinventor.mit.edu/?locale=fr pour les tests d'appel à la porte.
+2) Suite à l'ajout d'un module Wifi sur l'arduino qui fait aussi webserveur et donc peut être appelé directement par le front il a été décidé de supprimer le back java et de dispatcher les fonctionnalités entre l'arduino et front :
+    - L'arduino traitera les demandes POST avec le protocol définit dans le CDC.
+    - Le front récupère (pour le moment) le stockage des séquences et et leur envoi à l'arduino .
+3) Définition de la fonction d'ajout et stockage de séquences (timeline + enregistrement de l'état des led dans la séquence + liste séquences). 
+4) Présentation de la partie Arduino (partie serveur + partie de gestion des led).
+5) Discutions autour du projet. 
+-----------
 18/04/2018
 ODJ : Dev front et back
 --
