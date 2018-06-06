@@ -1,4 +1,13 @@
 -----------
+06/06/2018
+ODJ : Point d'avancement
+--
+FRONT
+1) Importation d'un component TimeLine
+2) Création des classes pour la mise en place de la timeline
+
+
+-----------
 30/05/2018
 ODJ : Point d'avancement
 --
