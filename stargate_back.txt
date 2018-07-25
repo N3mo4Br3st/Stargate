@@ -1,0 +1,94 @@
+===== info =====
+
+/info
+
+=> liste du paramétrage de la porte interrogée
+
+===== show =====
+
+/show
+?bandeau_ids=[{0..x}]
+
+=> mise en fonction du paramétrage des leds pour tous les bandeaux (tableau "bandeau_ids" vide) ou les bandeaux spécifiés (liste des ids)
+
+/show/glyphe
+
+=> mise en fonction des glyphes
+
+/show/chevron
+
+=> mise en fonction des chevrons
+
+/show/horizon
+
+=> mise en fonction de l'horizon des évenements
+
+===== raz  =====
+
+/raz
+?bandeau_ids=[{0..x}]
+
+=> préparation mise à zéro de tous les bandeaux (tableau "bandeau_ids" vide) ou des bandeaux spécifiés
+
+/raz
+?bandeau_id=x
+&led_ids=[{1..y}]
+
+=> préparation mise à zéro de une ou plusieurs led du bandeau 'x' spécifié
+
+/raz/glyphe
+?glyphe_ids=[{1..x}]
+
+=> préparation mise à zéro de un ou plusieurs glyphes
+
+/raz/chevron
+?chevron_ids=[{1..x}]
+
+=> préparation mise à zéro de un ou plusieurs chevrons
+
+/raz/horizon
+?led_ids=[{1..x}]
+
+=> préparation mise à zéro de une ou plusieurs leds de l'horizon des événements
+
+===== col  =====
+
+EN COURS DE PREPARATION _____________________________________
+
+
+
+
+
+/col/bandeau
+?bandeau_ids=[{1..x}]
+&couleurs=[]
+
+
+
+/col/led
+?bandeau_id=x
+&led_ids=[{0..y}]
+&couleurs=[]
+
+/col/glyphe
+?glyphe_ids=[{0..x}]
+&couleurs=[]
+
+/col/chevron
+?chevron_ids=[{0..x}]
+&couleurs=[]
+
+
+
+
+===== prog =====
+
+
+POUR LE PROG __________
+
+/prog
+/prog/horizon
+/prog/glyphe
+
+...
+
