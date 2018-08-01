@@ -1,5 +1,7 @@
 #include <FastLED.h>
 #include <SoftwareSerial.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
 
 //commun
 #define BRIGHTNESS  64
@@ -28,15 +30,13 @@ TBlendType    currentBlending;
 int adresse[9] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
 int glyphOrigine = 4;
 int mode = 0;
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
  
 ESP8266WebServer server(8080);
  
 
 
- const char* ssid = "*****";
-const char* password = "*******";
+const char* ssid = "*******";
+const char* password = "********";
 
  
 void handleBodyM0() { //Handler for the body path
