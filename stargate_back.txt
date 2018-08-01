@@ -37,6 +37,10 @@
 => préparation mise à zéro de une ou plusieurs led du bandeau 'x' spécifié
 
 /raz/glyphe
+
+=> préparation mise à zéro de toutes les glyphes
+
+/raz/glyphe
 ?glyphe_ids=[{1..x}]
 
 => préparation mise à zéro de un ou plusieurs glyphes
@@ -51,32 +55,42 @@
 
 => préparation mise à zéro de une ou plusieurs leds de l'horizon des événements
 
-===== col  =====
+===== couleur ===
+
+/couleur
+?couleur=rrggbb
+
+=> préparation de la couleur de toute la porte
+
+/couleur
+?bandeau_ids=[{1..x}]
+&couleur=rrggbb
+
+=> préparation de la couleur pour tout les bandeaux spécifiés
+
+/couleur
+?bandeau_id=x
+&leds=[(id_led=rrggbb)*{1..y}]
+
+exemple : [2=00FF33,7=5DE866, ...]
+
+=> préparation de la couleur pour chaque led sélectionnée du bandeau spécifié
+
+/couleur/glyphe
+?couleur=rrggbb
+
+=> préparation de la couleur pour ???
+
+/couleur/glyphe
+?glyphe_ids=[{1..x}]
+&
+
+
 
 EN COURS DE PREPARATION _____________________________________
 
 
 
-
-
-/col/bandeau
-?bandeau_ids=[{1..x}]
-&couleurs=[]
-
-
-
-/col/led
-?bandeau_id=x
-&led_ids=[{0..y}]
-&couleurs=[]
-
-/col/glyphe
-?glyphe_ids=[{0..x}]
-&couleurs=[]
-
-/col/chevron
-?chevron_ids=[{0..x}]
-&couleurs=[]
 
 
 
