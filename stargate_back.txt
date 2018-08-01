@@ -79,11 +79,38 @@ exemple : [2=00FF33,7=5DE866, ...]
 /couleur/glyphe
 ?couleur=rrggbb
 
-=> préparation de la couleur pour ???
+=> préparation de la couleur pour l'ensemble des glyphes
 
 /couleur/glyphe
-?glyphe_ids=[{1..x}]
-&
+?glyphes=[(id_glyphe=rrggbb)*{1..x}]
+
+exemple: voir "/couleur" ci-dessus
+
+=> préparation de la couleur pour chaque glyphe sélectionné
+
+/couleur/chevron
+?couleur=rrggbb
+
+=> préparation de la couleur pour l'ensemble des chevrons
+
+/couleur/chevron
+?chevrons=[(id_chevron=rrggbb)*{1..x}]
+
+exemple: voir "/couleur" ci-dessus
+
+=> préparation de la couleur pour chaque chevron sélectionné
+
+/couleur/horizon
+?couleur=rrggbb
+
+=> préparation de la couleur pour l'horizon des événements
+
+/couleur/horizon
+?portions=[(id_portion=rrggbb)*{1..x}]
+
+=> préparation de la couleur pour chaque portion sélectionnée (une ou plusieurs leds) de l'horizon des événements
+
+
 
 
 
