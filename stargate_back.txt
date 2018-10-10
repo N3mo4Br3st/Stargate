@@ -1,3 +1,8 @@
+------------------------------------------------------------------------------
+---                               LISTE DES URLS                           ---
+------------------------------------------------------------------------------
+
+
 ===== info =====
 
 /info
@@ -110,26 +115,42 @@ exemple: voir "/couleur" ci-dessus
 
 => préparation de la couleur pour chaque portion sélectionnée (une ou plusieurs leds) de l'horizon des événements
 
-
-
-
-
-EN COURS DE PREPARATION _____________________________________
-
-
-
-
-
-
-
 ===== prog =====
 
-
-POUR LE PROG __________
-
 /prog
-/prog/horizon
-/prog/glyphe
+?nom=nom_programme[&args=...]
 
-...
+=> lancement d'un programme avec ses possibles arguments
 
+/prog/list
+
+=> récupération de la liste des programmes disponibles
+
+/prog/activation/complete
+?sequence_glyphes=[id_glyphe*{7..9}][&fail={1..{7..9}}]
+
+=> lancement de la séquence d'allumage complète suivant les glyphes sélectionnés, avec soit 7, soit 8, ou soit 9 chevrons d'activés, et autant de glyphes
+=> avec fail défini : l'étape à laquelle la séquence échoue (de 1 à la limite défini par le nombre de chevrons activés, soit entre 7 et 9)
+
+/prog/activation/dial
+?chevron=[id_chevron{1..9}]&glyphe=[id_glyphe{1..36}]
+
+=> lancement de la séquence de dial à partir du chevron sélectionné et en activant le glyphe sélectionné
+
+/prog/activation/chevrons
+?type_activation={normal,galaxie,univers}
+
+=> lancement de la séquence d'activation des chevrons seuls suivant le mode "normal" (7 chevrons), "galaxie" (8 chevrons) et "univers" (9 chevrons)
+
+/prog/activation/horizon
+
+=> lancement de la séquence d'activation de l'horizon des événements
+
+------------------------------------------------------------------------------
+---                     LISTE DES PROGRAMMES (/prog)                       ---
+------------------------------------------------------------------------------
+
+???
+
+
+TODO : séquence arc-en-ciel, définition couleur de l'activation, mode variation, mode random
