@@ -11,6 +11,9 @@
 
 // ### STRUCTURES ######################
 
+// Niveau d'accessibilité des options
+enum Perimetre {total, glyphe, chevron, horizon};
+
 // ### CONSTANTES ######################
 
 #define DEF_COLOR_ORDER = GRB
@@ -79,6 +82,75 @@ void connecting() {
     }
 }
 
+// ##### SERVER HELPERS
+
+void initEndPoints() {
+    server.on("/info", handleInfo);
+    server.on("/show", []() { handleShow(Perimetre::total); });
+    server.on("/show/glyphe", []() { handleShow(Perimetre::glyphe); });
+    server.on("/show/chevron", []() { handleShow(Perimetre::chevron); });
+    server.on("/show/horizon", []() { handleShow(Perimetre::horizon); });
+    server.on("/raz", []() { handleRaz(Perimetre::total); });
+    server.on("/raz/glyphe", []() { handleRaz(Perimetre::glyphe); });
+    server.on("/raz/chevron", []() { handleRaz(Perimetre::chevron); });
+    server.on("/raz/horizon", []() { handleRaz(Perimetre::horizon); });
+    server.on("/couleur", []() { handleCouleur(Perimetre::total); });
+    server.on("/couleur/glyphe", []() { handleCouleur(Perimetre::glyphe); });
+    server.on("/couleur/chevron", []() { handleCouleur(Perimetre::chevron); });
+    server.on("/couleur/horizon", []() { handleCouleur(Perimetre::horizon); });
+    server.on("/prog", []() {
+        //
+        //
+    });
+    server.on("/prog/list", []() {
+        //
+        //
+    });
+    server.on("/prog/activation/complete", []() {
+        //
+        //
+    });
+    server.on("/prog/activation/dial", []() {
+        //
+        //
+    });
+    server.on("/prog/activation/chevrons", []() {
+        //
+        //
+    });
+    server.on("/prog/activation/horizon", []() {
+        //
+        //
+    });
+}
+
+void handleInfo() {
+    //
+    // TODO : renvoi les infos sur la porte
+    //
+}
+
+void handleShow(Perimetre perimetre) {
+    //
+    switch (perimetre) {
+        case Perimetre::total:
+            //
+            break;
+            //
+    }
+    //
+}
+
+void handleRaz(Perimetre perimetre) {
+    //
+    //
+}
+
+void handleCouleur(Perimetre perimetre) {
+    //
+    //
+}
+
 // ### CLASSES #########################
 // ### MAIN ############################
 
@@ -94,11 +166,7 @@ void setup() {
     // TODO : initialiser les LEDS
     //
     // ## Initialisation du serveur
-    //
-    // TODO : finir cette partie
-    //
-    //server.on(blablabla);
-    //
+    initEndPoints();
     server.begin();
 }
 
