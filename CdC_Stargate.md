@@ -54,9 +54,19 @@ PROTOCOL de dialogue:
               (-GLY(y) prévoir de passer un glyph en param pour s'arreter dessus )
     M1-SEQ-HZN(p)                     => lance la seqence de l'horizon des événements avec le profil p (a mapper en dur)
     M1-PAL-HNZ[couleur1,couleur,...]  => modifier la palette de couleur pour l'horizon des événements
-    
+
+
+Le back est désormais inclus dans l'arduino.
+
+[Dépôt pas trop mal pour avoir des infos sur l'ESP8266](https://github.com/esp8266/Arduino)
+
+
 Partie 2 - Back 
 --
+
+ATTENTION !!
+Depuis un moment, le back est directement intégré au bas niveau
+
 Back si possible en java et serveur web à définir
 
 - Envoi sur le port série du choix de couleur de chaque led du ruban choisi
