@@ -1,4 +1,8 @@
 // ### INFOS ###########################
+
+// Declarations des variables et constantes dans secure.h :
+// const struct Def_Reseau CONF_RESEAUX[CONF_NB_RESEAUX]
+
 // ### HEADERS #########################
 
 #include <FastLED.h>
@@ -6,13 +10,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
+#include "structures.h"
+
+// include de configuration par porte
 #include "secure.h"
 #include "conf.h"
-
-// ### STRUCTURES ######################
-
-// Niveau d'accessibilité des options
-enum Perimetre {total, glyphe, chevron, horizon};
 
 // ### CONSTANTES ######################
 
@@ -20,6 +22,10 @@ enum Perimetre {total, glyphe, chevron, horizon};
 
 // ### VARIABLES GLOBALES ##############
 
+bool getnet = false;
+int sel_lvl = 0;
+Def_Reseau sel_reseau = {"", ""};
+bool good_ssid[CONF_NB_RESEAUX];
 ESP8266WebServer server(8080);
 
 // ### FUNCTIONS #######################
@@ -28,19 +34,16 @@ ESP8266WebServer server(8080);
 
 // scanning network and check if there is one in the whitelist available
 bool scanning() {
-    //
-    // TODO : A REFAIRE AVEC LA NOUVELLE VERSION DU SECURE.H !!!!!!!!
-    //
     bool res = false;
     int nbn = WiFi.scanNetworks();
-    sel_lvl = CONF_NB_SSID;
+    sel_lvl = CONF_NB_RESEAUX;
     for (int i = 0; i < nbn; i++) {
         String tmp_ssid = WiFi.SSID(i);
         for (int j = 0; j < sel_lvl; j++) {
-            if (tmp_ssid == CONF_SSIDS[j]) {
+            if (good_ssid[j] && tmp_ssid == CONF_RESEAUX[j].ssid) {
                 sel_lvl = j;
-                sel_ssid = CONF_SSIDS[j];
-                sel_pwd = CONF_PASSES[j];
+                sel_reseau.ssid = CONF_RESEAUX[j].ssid;
+                sel_reseau.pwd = CONF_RESEAUX[j].pwd;
                 res = true;
                 break;
             }
@@ -57,27 +60,20 @@ void connecting() {
     if (!getnet) { delay(5000); } // delay the next scan in 5 seconds
     else {
         // try to connect to the selected network
-        WiFi.begin(sel_ssid.c_str(), sel_pwd.c_str());
+        WiFi.begin(sel_reseau.ssid.c_str(), sel_reseau.pwd.c_str());
         // loop until the esp succeed to connect, or failed
         bool tryconnect = true;
         while (tryconnect) {
             if (WiFi.status() == WL_CONNECT_FAILED) {
                 getnet = false;
-                delay(5000);
+                good_ssid[sel_lvl] = false;
+                delay(1000);
                 tryconnect = false;
             }
             else if (WiFi.status() == WL_CONNECTED) {
                 tryconnect = false;
             }
-            delay(500);
-        }
-        // if the connection succeed
-        if (getnet) {
-            //
-            //
-            // TODO : setup webserver ?
-            // TODO : setup udp ?
-            //
+            delay(300);
         }
     }
 }
@@ -89,15 +85,15 @@ void initEndPoints() {
     server.on("/show", []() { handleShow(Perimetre::total); });
     server.on("/show/glyphe", []() { handleShow(Perimetre::glyphe); });
     server.on("/show/chevron", []() { handleShow(Perimetre::chevron); });
-    server.on("/show/horizon", []() { handleShow(Perimetre::horizon); });
+    server.on("/show/horizon", []() { handleShow(Perimetre::horizon); });
     server.on("/raz", []() { handleRaz(Perimetre::total); });
     server.on("/raz/glyphe", []() { handleRaz(Perimetre::glyphe); });
     server.on("/raz/chevron", []() { handleRaz(Perimetre::chevron); });
-    server.on("/raz/horizon", []() { handleRaz(Perimetre::horizon); });
+    server.on("/raz/horizon", []() { handleRaz(Perimetre::horizon); });
     server.on("/couleur", []() { handleCouleur(Perimetre::total); });
     server.on("/couleur/glyphe", []() { handleCouleur(Perimetre::glyphe); });
     server.on("/couleur/chevron", []() { handleCouleur(Perimetre::chevron); });
-    server.on("/couleur/horizon", []() { handleCouleur(Perimetre::horizon); });
+    server.on("/couleur/horizon", []() { handleCouleur(Perimetre::horizon); });
     server.on("/prog", []() {
         //
         //
@@ -130,7 +126,7 @@ void handleInfo() {
     //
 }
 
-void handleShow(Perimetre perimetre) {
+void handleShow(Perimetre perimetre) {
     //
     switch (perimetre) {
         case Perimetre::total:
@@ -164,6 +160,7 @@ void setup() {
     // TODO : initialiser des variables
     //
     // TODO : initialiser les LEDS
+    //a refaire foreeach (bandeaux ) FastLED.addLeds<LED_TYPE, bandeaux[i].LED_PIN, DEF_COLOR_ORDER>(bandeaux[i].leds, bandeaux[i].numled).setCorrection( TypicalLEDStrip );
     //
     // ## Initialisation du serveur
     initEndPoints();
