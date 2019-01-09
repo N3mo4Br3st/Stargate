@@ -7,19 +7,23 @@ struct Def_Reseau {
 
 // ### GESTION MODES ###################
 
-enum Mode_porte { autonome, wifi }; //serie ?
+enum Mode_porte { MD_AUTONOME, MD_WIFI }; //serie ?
 
 // ### GESTION ENDPOINTS ###############
 
 // Niveau d'accessibilite des options
-enum Perimetre {total, glyphe, chevron, horizon};
+enum Perimetre {PR_TOTAL, PR_GLYPHE, PR_CHEVRON, PR_HORIZON};
 
 // ### GESTION LEDS ####################
 
+#define MAX_NB_LEDS 
+
+enum Led_type {LED_WS2812, LED_WS2811};
+
 struct Bandeau {
-    CRGB leds[];
-    int pin;
-    int nbleds;
+    const int nbleds;
+    const Led_type type;
+    CRGB *leds;
 };
 
 struct Liaison_Composant_Leds {

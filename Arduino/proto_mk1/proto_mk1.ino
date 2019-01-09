@@ -18,7 +18,7 @@
 
 // ### CONSTANTES ######################
 
-#define DEF_COLOR_ORDER = GRB
+#define DEF_COLOR_ORDER_WS2812 = GRB
 
 // ### VARIABLES GLOBALES ##############
 
@@ -82,18 +82,18 @@ void connecting() {
 
 void initEndPoints() {
     server.on("/info", handleInfo);
-    server.on("/show", []() { handleShow(Perimetre::total); });
-    server.on("/show/glyphe", []() { handleShow(Perimetre::glyphe); });
-    server.on("/show/chevron", []() { handleShow(Perimetre::chevron); });
-    server.on("/show/horizon", []() { handleShow(Perimetre::horizon); });
-    server.on("/raz", []() { handleRaz(Perimetre::total); });
-    server.on("/raz/glyphe", []() { handleRaz(Perimetre::glyphe); });
-    server.on("/raz/chevron", []() { handleRaz(Perimetre::chevron); });
-    server.on("/raz/horizon", []() { handleRaz(Perimetre::horizon); });
-    server.on("/couleur", []() { handleCouleur(Perimetre::total); });
-    server.on("/couleur/glyphe", []() { handleCouleur(Perimetre::glyphe); });
-    server.on("/couleur/chevron", []() { handleCouleur(Perimetre::chevron); });
-    server.on("/couleur/horizon", []() { handleCouleur(Perimetre::horizon); });
+    server.on("/show", []() { handleShow(PR_TOTAL); });
+    server.on("/show/glyphe", []() { handleShow(PR_GLYPHE); });
+    server.on("/show/chevron", []() { handleShow(PR_CHEVRON); });
+    server.on("/show/horizon", []() { handleShow(PR_HORIZON); });
+    server.on("/raz", []() { handleRaz(PR_TOTAL); });
+    server.on("/raz/glyphe", []() { handleRaz(PR_GLYPHE); });
+    server.on("/raz/chevron", []() { handleRaz(PR_CHEVRON); });
+    server.on("/raz/horizon", []() { handleRaz(PR_HORIZON); });
+    server.on("/couleur", []() { handleCouleur(PR_TOTAL); });
+    server.on("/couleur/glyphe", []() { handleCouleur(PR_GLYPHE); });
+    server.on("/couleur/chevron", []() { handleCouleur(PR_CHEVRON); });
+    server.on("/couleur/horizon", []() { handleCouleur(PR_HORIZON); });
     server.on("/prog", []() {
         //
         //
@@ -129,7 +129,7 @@ void handleInfo() {
 void handleShow(Perimetre perimetre) {
     //
     switch (perimetre) {
-        case Perimetre::total:
+        case PR_TOTAL:
             //
             break;
             //
@@ -147,22 +147,38 @@ void handleCouleur(Perimetre perimetre) {
     //
 }
 
+// ##### LEDS HELPERS
+
+void initSwitchLED_WS2812(int i) {
+  //switch(
+  //
+}
+
 // ### CLASSES #########################
 // ### MAIN ############################
 
 void setup() {
     delay(3000); // power-up safety delay
+    // setup wifi
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+    // init des leds
+    for (int i = 0; i < NB_BANDEAUX; ++i) {
+      bandeaux[i].leds = (CRGB*) malloc(bandeaux[i].nbleds*sizeof(CRGB));
+      for (int j = 0; j < bandeaux[i].nbleds; ++j) {
+        bandeaux[i].leds[j] = CRGB::Black;
+      }
+      switch (bandeaux[i].type) {
+        case LED_WS2812:
+          FastLED.addLeds<WS2812, bandeaux[i].pin, DEF_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
+          break;
+      }
+    }
+    // init des elements ???
     //
-    // TODO : connexion wifi
+    // TODO : est-ce qu'on init les chevrons, glyphes, etc
     //
-    // TODO : mise en mode broadcast udp pour découverte (à faire quand le udp sonar handshake sera dév par Killian)
-    //
-    // TODO : initialiser des variables
-    //
-    // TODO : initialiser les LEDS
-    //a refaire foreeach (bandeaux ) FastLED.addLeds<LED_TYPE, bandeaux[i].LED_PIN, DEF_COLOR_ORDER>(bandeaux[i].leds, bandeaux[i].numled).setCorrection( TypicalLEDStrip );
-    //
-    // ## Initialisation du serveur
+    // init du serveur
     initEndPoints();
     server.begin();
 }
