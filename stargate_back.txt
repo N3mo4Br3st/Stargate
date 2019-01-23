@@ -122,6 +122,8 @@ exemple: voir "/couleur" ci-dessus
 
 => lancement d'un programme avec ses possibles arguments
 
+!!! A minima, chaque programme doit répondre à l'argument "info" par une description et la liste des arguments
+
 /prog/list
 
 => récupération de la liste des programmes disponibles
