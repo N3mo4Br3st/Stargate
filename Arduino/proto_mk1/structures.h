@@ -20,7 +20,10 @@ enum Perimetre {PR_TOTAL, PR_GLYPHE, PR_CHEVRON, PR_HORIZON};
 
 enum Led_type {LED_WS2812, LED_WS2811};
 
+enum Led_pin {PIN_1, PIN_2, PIN_3, PIN_4, PIN_5, PIN_6, PIN_7, PIN_8};
+
 struct Bandeau {
+    const Led_pin pin;
     const int nbleds;
     const Led_type type;
     CRGB *leds;

@@ -150,8 +150,32 @@ void handleCouleur(Perimetre perimetre) {
 // ##### LEDS HELPERS
 
 void initSwitchLED_WS2812(int i) {
-  //switch(
-  //
+  switch(bandeaux[i].pin) {
+    case PIN_1:
+      FastLED.addLeds<WS2812, PIN_BANDEAU1, LED_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
+      break;
+    case PIN_2:
+      FastLED.addLeds<WS2812, PIN_BANDEAU2, LED_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
+      break;
+    case PIN_3:
+      FastLED.addLeds<WS2812, PIN_BANDEAU3, LED_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
+      break;
+    case PIN_4:
+      FastLED.addLeds<WS2812, PIN_BANDEAU4, LED_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
+      break;
+    case PIN_5:
+      FastLED.addLeds<WS2812, PIN_BANDEAU5, LED_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
+      break;
+    case PIN_6:
+      FastLED.addLeds<WS2812, PIN_BANDEAU6, LED_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
+      break;
+    case PIN_7:
+      FastLED.addLeds<WS2812, PIN_BANDEAU7, LED_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
+      break;
+    case PIN_8:
+      FastLED.addLeds<WS2812, PIN_BANDEAU8, LED_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
+      break;
+  }
 }
 
 // ### CLASSES #########################
@@ -169,9 +193,7 @@ void setup() {
         bandeaux[i].leds[j] = CRGB::Black;
       }
       switch (bandeaux[i].type) {
-        case LED_WS2812:
-          FastLED.addLeds<WS2812, bandeaux[i].pin, DEF_COLOR_ORDER_WS2812>(bandeaux[i].leds, bandeaux[i].nbleds).setCorrection(TypicalLEDStrip);
-          break;
+        case LED_WS2812: initSwitchLED_WS2812(i); break;
       }
     }
     // init des elements ???
