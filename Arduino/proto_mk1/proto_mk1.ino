@@ -198,6 +198,8 @@ void setup() {
     }
     // init des elements ???
     //
+    memset(toto, 0, 50*sizeof(element_t));
+    //
     // TODO : est-ce qu'on init les chevrons, glyphes, etc
     //
     // init du serveur

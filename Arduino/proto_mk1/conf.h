@@ -17,8 +17,7 @@
 
 #define LED_COLOR_ORDER_WS2812 GRB
 
-
-struct Bandeau bandeaux[NB_BANDEAUX] = {
+Bandeau_t bandeaux[NB_BANDEAUX] = {
     {PIN_1, NB_LED_BANDEAU1, LED_WS2812, NULL},
     {PIN_2, NB_LED_BANDEAU1, LED_WS2812, NULL},
     {PIN_3, NB_LED_BANDEAU1, LED_WS2812, NULL},
@@ -28,19 +27,17 @@ struct Bandeau bandeaux[NB_BANDEAUX] = {
 
 // ### ZONE DE TEST #################
 
-//struct Bandeau bandeautest = {1, 5, NULL};
+
+
+element_t toto[50];
 
 /*
-bandeaux[Bandeau] 
-
-bandeaux[0] = .....
-const Bandeau BandeauGlyphes = {
-    [],
-    //
-}
-
-const Composant Glyphe1 = {
-    //
-    //
-}
+element_t elements[NB_ELEMENT] = {
+    {
+      {x,y},{x,y},{x,y},
+      {x,y},{x,y},{x,y},
+      {x,y},{x,y},{x,y},{x,y},...
+    },
+    ...
+};
 */
