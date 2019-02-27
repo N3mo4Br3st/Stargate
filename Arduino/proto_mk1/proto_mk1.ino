@@ -8,13 +8,22 @@
 #include <FastLED.h>
 #include <SoftwareSerial.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
+//#include <ESP8266WebServer.h>
+
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 #include "structures.h"
 
 // include de configuration par porte
 #include "secure.h"
 #include "conf.h"
+
+#ifdef UNIVERSE
+#ifndef ATLANTIS
+#define ATLANTIS
+#endif
+#endif
 
 // ### CONSTANTES ######################
 
@@ -26,7 +35,9 @@ bool getnet = false;
 int sel_lvl = 0;
 Def_Reseau sel_reseau = {"", ""};
 bool good_ssid[CONF_NB_RESEAUX];
-ESP8266WebServer server(8080);
+
+//ESP8266WebServer server(8080);
+AsyncWebServer server(8080);
 
 // ### FUNCTIONS #######################
 
@@ -80,53 +91,71 @@ void connecting() {
 
 // ##### SERVER HELPERS
 
+void notFound(AsyncWebServerRequest *request) {
+    request->send(404, "text/plain", "Not found");
+}
+
 void initEndPoints() {
-    server.on("/info", handleInfo);
-    server.on("/show", []() { handleShow(PR_TOTAL); });
-    server.on("/show/glyphe", []() { handleShow(PR_GLYPHE); });
-    server.on("/show/chevron", []() { handleShow(PR_CHEVRON); });
-    server.on("/show/horizon", []() { handleShow(PR_HORIZON); });
-    server.on("/raz", []() { handleRaz(PR_TOTAL); });
-    server.on("/raz/glyphe", []() { handleRaz(PR_GLYPHE); });
-    server.on("/raz/chevron", []() { handleRaz(PR_CHEVRON); });
-    server.on("/raz/horizon", []() { handleRaz(PR_HORIZON); });
-    server.on("/couleur", []() { handleCouleur(PR_TOTAL); });
-    server.on("/couleur/glyphe", []() { handleCouleur(PR_GLYPHE); });
-    server.on("/couleur/chevron", []() { handleCouleur(PR_CHEVRON); });
-    server.on("/couleur/horizon", []() { handleCouleur(PR_HORIZON); });
-    server.on("/prog", []() {
+    server.on("/info", HTTP_GET, handleInfo);
+    server.on("/show", HTTP_GET, [](AsyncWebServerRequest *request) { handleShow(PR_TOTAL, request); });
+    server.on("/couleur", HTTP_POST, [](AsyncWebServerRequest *request) { handleCouleur(PR_TOTAL, request); });
+    server.on("/raz", HTTP_GET, [](AsyncWebServerRequest *request) { handleRaz(PR_TOTAL, request); });
+    server.on("/show/chevron", HTTP_GET, [](AsyncWebServerRequest *request) { handleShow(PR_CHEVRON, request); });
+    server.on("/couleur/chevron", HTTP_POST, [](AsyncWebServerRequest *request) { handleCouleur(PR_CHEVRON, request); });
+    server.on("/raz/chevron", HTTP_GET, [](AsyncWebServerRequest *request) { handleRaz(PR_CHEVRON, request); });
+    #ifdef ATLANTIS
+    server.on("/show/glyphe", HTTP_GET, [](AsyncWebServerRequest *request) { handleShow(PR_GLYPHE, request); });
+    server.on("/couleur/glyphe", HTTP_POST, [](AsyncWebServerRequest *request) { handleCouleur(PR_GLYPHE, request); });
+    server.on("/raz/glyphe", HTTP_GET, [](AsyncWebServerRequest *request) { handleRaz(PR_GLYPHE, request); });
+    #endif
+    server.on("/show/horizon", HTTP_GET, [](AsyncWebServerRequest *request) { handleShow(PR_HORIZON, request); });
+    server.on("/couleur/horizon", HTTP_POST, [](AsyncWebServerRequest *request) { handleCouleur(PR_HORIZON, request); });
+    server.on("/raz/horizon", HTTP_GET, [](AsyncWebServerRequest *request) { handleRaz(PR_HORIZON, request); });
+
+    // Prog API
+    server.on("/prog", HTTP_POST, [](AsyncWebServerRequest *request) {
         //
-        //
-    });
-    server.on("/prog/list", []() {
-        //
-        //
-    });
-    server.on("/prog/activation/complete", []() {
-        //
+        request->send(200, "text/plain", "Prog");
         //
     });
-    server.on("/prog/activation/dial", []() {
+    server.on("/prog/list", HTTP_GET, [](AsyncWebServerRequest *request) {
         //
-        //
-    });
-    server.on("/prog/activation/chevrons", []() {
-        //
+        request->send(200, "text/plain", "Prog");
         //
     });
-    server.on("/prog/activation/horizon", []() {
+    server.on("/prog/activation/complete", HTTP_POST, [](AsyncWebServerRequest *request) {
         //
+        request->send(200, "text/plain", "Prog");
+        //
+    });
+    server.on("/prog/activation/dial", HTTP_POST, [](AsyncWebServerRequest *request) {
+        //
+        request->send(200, "text/plain", "Prog");
+        //
+    });
+    server.on("/prog/activation/chevrons", HTTP_POST, [](AsyncWebServerRequest *request) {
+        //
+        request->send(200, "text/plain", "Prog");
+        //
+    });
+    server.on("/prog/activation/horizon", HTTP_GET, [](AsyncWebServerRequest *request) {
+        //
+        request->send(200, "text/plain", "Prog");
         //
     });
 }
 
-void handleInfo() {
+void handleInfo(AsyncWebServerRequest *request) {
     //
     // TODO : renvoi les infos sur la porte
     //
+    // TODO : renvoi type ATLANTIS / SG1 / UNIVERSE
+    //
+    request->send(200, "text/plain", "Info");
+    //
 }
 
-void handleShow(Perimetre perimetre) {
+void handleShow(Perimetre perimetre, AsyncWebServerRequest *request) {
     //
     switch (perimetre) {
         case PR_TOTAL:
@@ -135,15 +164,19 @@ void handleShow(Perimetre perimetre) {
             //
     }
     //
-}
-
-void handleRaz(Perimetre perimetre) {
-    //
+    request->send(200, "text/plain", "show");
     //
 }
 
-void handleCouleur(Perimetre perimetre) {
+void handleRaz(Perimetre perimetre, AsyncWebServerRequest *request) {
     //
+    request->send(200, "text/plain", "Info");
+    //
+}
+
+void handleCouleur(Perimetre perimetre, AsyncWebServerRequest *request) {
+    //
+    request->send(200, "text/plain", "Info");
     //
 }
 
@@ -178,6 +211,19 @@ void initSwitchLED_WS2812(int i) {
   }
 }
 
+// ##### CONTROLS HELPERS
+
+bool check_delay(int delay_time) {
+    //
+    // TODO : check for interruption
+    //
+    delay(delay_time);
+    //
+    // TODO : check for interruption
+    //
+    return true;
+}
+
 // ### CLASSES #########################
 // ### MAIN ############################
 
@@ -204,9 +250,10 @@ void setup() {
     //
     // init du serveur
     initEndPoints();
+    server.onNotFound(notFound);
     server.begin();
 }
 
 void loop() {
-    server.handleClient();
+    //server.handleClient();
 }

@@ -1,4 +1,8 @@
 //commun
+//#define SG1
+#define ATLANTIS
+//#define UNIVERSE
+
 #define BRIGHTNESS  64
 
 #define NB_BANDEAUX      4
