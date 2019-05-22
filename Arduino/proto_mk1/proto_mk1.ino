@@ -91,12 +91,29 @@ void connecting() {
 
 // ##### SERVER HELPERS
 
+// passage d'une chaine de caracteres a un tableau de nombres (short)
+short split_short(AsyncWebParameter* p, short tableau[]) {
+    const String data = p->value();
+    String data_clean = data.substring(1, data.length()-1);
+    size_t prev = 0, pos = 0;
+    short taille = 0;
+    do {
+        pos = data_clean.indexOf(',', prev);
+        if (pos == -1) pos = data_clean.length();
+        tableau[taille] = data_clean.substring(prev, pos).toInt();
+        taille++;
+        prev = pos+1;
+    } while (pos < data_clean.length() && prev < data_clean.length());
+    return taille;
+}
+
 void notFound(AsyncWebServerRequest *request) {
     request->send(404, "text/plain", "Not found");
 }
 
 void initEndPoints() {
     server.on("/info", HTTP_GET, handleInfo);
+    server.on("/mask", HTTP_POST, [](AsyncWebServerRequest *request) { handleMask(request); });
     server.on("/show", HTTP_GET, [](AsyncWebServerRequest *request) { handleShow(PR_TOTAL, request); });
     server.on("/couleur", HTTP_POST, [](AsyncWebServerRequest *request) { handleCouleur(PR_TOTAL, request); });
     server.on("/raz", HTTP_GET, [](AsyncWebServerRequest *request) { handleRaz(PR_TOTAL, request); });
@@ -155,17 +172,37 @@ void handleInfo(AsyncWebServerRequest *request) {
     //
 }
 
-void handleShow(Perimetre perimetre, AsyncWebServerRequest *request) {
+void handleMask(AsyncWebServerRequest *request) {
     //
+    // TODO : récupérer les valeurs et assigner chaque valeur dans le masque correspondant
+    //
+    //
+    request->send(200, "text/plain", "Mask");
+    //
+}
+
+void handleShow(Perimetre perimetre, AsyncWebServerRequest *request) {
+    short bandeaux[NB_BANDEAUX] = {0};
+    short taille = 0;
     switch (perimetre) {
         case PR_TOTAL:
-            //
+            if (request->hasParam("bandeau_ids")) {
+                // si le parametre bandeau_ids existe, alors il faut parser la chaine de la request et en faire un tableau de short
+                taille = split_short(request->getParam("bandeau_ids"), bandeaux);
+            }
+            else {
+                // si bandeau_ids inexistant, bandeaux doit etre sette avec une boucle
+                taille = NB_BANDEAUX;
+                for (int i = 0; i<NB_BANDEAUX; ++i) {
+                    bandeaux[i] = i;
+                }
+            }
             break;
             //
     }
-    //
+    funDAO_show(taille, bandeaux);
+    FastLED.show();
     request->send(200, "text/plain", "show");
-    //
 }
 
 void handleRaz(Perimetre perimetre, AsyncWebServerRequest *request) {
@@ -211,6 +248,20 @@ void initSwitchLED_WS2812(int i) {
   }
 }
 
+void funDAO_show(short taille, short ids[NB_BANDEAUX]) {
+    // la fonction prend un ou plusieurs bandeaux, et transmet la couleur préparée dans bandeaux[x].prepa_leds à bandeaux[x].leds
+    for (short i = 0; i<taille; ++i) {
+        for (short j = 0; j<bandeaux[ids[i]].nbleds; ++j) {
+            if (bandeaux[ids[i]].mask[j]) {
+                bandeaux[ids[i]].leds[j] = bandeaux[ids[i]].prepa_leds[j];
+            }
+            else {
+                bandeaux[ids[i]].leds[j] = CRGB::Black;
+            }
+        }
+    }
+}
+
 // ##### CONTROLS HELPERS
 
 bool check_delay(int delay_time) {
@@ -234,15 +285,22 @@ void setup() {
     WiFi.disconnect();
     // init des leds
     for (int i = 0; i < NB_BANDEAUX; ++i) {
+      bandeaux[i].mask = (boolean*) malloc(bandeaux[i].nbleds*sizeof(boolean));
+      bandeaux[i].prepa_leds = (CRGB*) malloc(bandeaux[i].nbleds*sizeof(CRGB));
       bandeaux[i].leds = (CRGB*) malloc(bandeaux[i].nbleds*sizeof(CRGB));
       for (int j = 0; j < bandeaux[i].nbleds; ++j) {
+        //
+        // TODO : à sortir en fonction (RAZ)
+        bandeaux[i].prepa_leds[j] = default_bandeaux[i][j];
+        //
         bandeaux[i].leds[j] = CRGB::Black;
       }
       switch (bandeaux[i].type) {
         case LED_WS2812: initSwitchLED_WS2812(i); break;
       }
     }
-    // init des elements ???
+    FastLED.show();
+    //
     //
     memset(toto, 0, 50*sizeof(element_t));
     //
@@ -255,5 +313,6 @@ void setup() {
 }
 
 void loop() {
-    //server.handleClient();
+    //
+    //
 }

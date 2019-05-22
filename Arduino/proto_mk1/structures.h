@@ -26,6 +26,8 @@ typedef struct {
     const Led_pin pin;
     const short nbleds;
     const Led_type type;
+    boolean *mask;
+    CRGB *prepa_leds;
     CRGB *leds;
 } Bandeau_t;
 
