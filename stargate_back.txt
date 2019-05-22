@@ -16,6 +16,12 @@
 
 => mise en fonction du paramétrage des leds pour tous les bandeaux (tableau "bandeau_ids" vide) ou les bandeaux spécifiés (liste des ids)
 
+/show
+?bandeau_id=x
+&led_ids=[{1...y}]
+
+=> mise en fonction du paramétrage des leds d'un bandeaux, avec les leds spécifiées en paramètres
+
 /show/glyphe
 
 => mise en fonction des glyphes
@@ -114,6 +120,38 @@ exemple: voir "/couleur" ci-dessus
 ?portions=[(id_portion=rrggbb)*{1..x}]
 
 => préparation de la couleur pour chaque portion sélectionnée (une ou plusieurs leds) de l'horizon des événements
+
+===== shutdown ===
+
+/shutdown
+?bandeau_ids=[{0..x}]
+
+=> mise à black des leds de tous les bandeaux (tableau "bandeau_ids" vide) ou des bandeaux spécifiés
+
+/shutdown
+?bandeau_id=x
+&led_ids=[{1..y}]
+
+=> mise à black de une ou plusieurs led du bandeau 'x' spécifié
+
+/shutdown/glyphe
+
+=> mise à black de toutes les glyphes
+
+/shutdown/glyphe
+?glyphe_ids=[{1..x}]
+
+=> mise à black de un ou plusieurs glyphes
+
+/shutdown/chevron
+?chevron_ids=[{1..x}]
+
+=> mise à black de un ou plusieurs chevrons
+
+/shutdown/horizon
+?led_ids=[{1..x}]
+
+=> mise à black de une ou plusieurs leds de l'horizon des événements
 
 ===== prog =====
 
