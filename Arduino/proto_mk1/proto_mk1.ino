@@ -41,6 +41,10 @@ AsyncWebServer server(8080);
 
 // ### FUNCTIONS #######################
 
+// ##### GLOBAL HELPERS
+
+void init_bandeaux_tab(short t[NB_BANDEAUX]) { for (short i = 0;i<NB_BANDEAUX;++i) { t[i] = i; } }
+
 // ##### WIFI HELPERS
 
 // scanning network and check if there is one in the whitelist available
@@ -114,20 +118,20 @@ void notFound(AsyncWebServerRequest *request) {
 void initEndPoints() {
     server.on("/info", HTTP_GET, handleInfo);
     server.on("/mask", HTTP_POST, [](AsyncWebServerRequest *request) { handleMask(request); });
-    server.on("/show", HTTP_GET, [](AsyncWebServerRequest *request) { handleShow(PR_TOTAL, request); });
+    server.on("/show", HTTP_POST, [](AsyncWebServerRequest *request) { handleShow(PR_TOTAL, request); });
     server.on("/couleur", HTTP_POST, [](AsyncWebServerRequest *request) { handleCouleur(PR_TOTAL, request); });
-    server.on("/raz", HTTP_GET, [](AsyncWebServerRequest *request) { handleRaz(PR_TOTAL, request); });
-    server.on("/show/chevron", HTTP_GET, [](AsyncWebServerRequest *request) { handleShow(PR_CHEVRON, request); });
+    server.on("/raz", HTTP_POST, [](AsyncWebServerRequest *request) { handleRaz(PR_TOTAL, request); });
+    server.on("/show/chevron", HTTP_POST, [](AsyncWebServerRequest *request) { handleShow(PR_CHEVRON, request); });
     server.on("/couleur/chevron", HTTP_POST, [](AsyncWebServerRequest *request) { handleCouleur(PR_CHEVRON, request); });
-    server.on("/raz/chevron", HTTP_GET, [](AsyncWebServerRequest *request) { handleRaz(PR_CHEVRON, request); });
+    server.on("/raz/chevron", HTTP_POST, [](AsyncWebServerRequest *request) { handleRaz(PR_CHEVRON, request); });
     #ifdef ATLANTIS
-    server.on("/show/glyphe", HTTP_GET, [](AsyncWebServerRequest *request) { handleShow(PR_GLYPHE, request); });
+    server.on("/show/glyphe", HTTP_POST, [](AsyncWebServerRequest *request) { handleShow(PR_GLYPHE, request); });
     server.on("/couleur/glyphe", HTTP_POST, [](AsyncWebServerRequest *request) { handleCouleur(PR_GLYPHE, request); });
-    server.on("/raz/glyphe", HTTP_GET, [](AsyncWebServerRequest *request) { handleRaz(PR_GLYPHE, request); });
+    server.on("/raz/glyphe", HTTP_POST, [](AsyncWebServerRequest *request) { handleRaz(PR_GLYPHE, request); });
     #endif
-    server.on("/show/horizon", HTTP_GET, [](AsyncWebServerRequest *request) { handleShow(PR_HORIZON, request); });
+    server.on("/show/horizon", HTTP_POST, [](AsyncWebServerRequest *request) { handleShow(PR_HORIZON, request); });
     server.on("/couleur/horizon", HTTP_POST, [](AsyncWebServerRequest *request) { handleCouleur(PR_HORIZON, request); });
-    server.on("/raz/horizon", HTTP_GET, [](AsyncWebServerRequest *request) { handleRaz(PR_HORIZON, request); });
+    server.on("/raz/horizon", HTTP_POST, [](AsyncWebServerRequest *request) { handleRaz(PR_HORIZON, request); });
 
     // Prog API
     server.on("/prog", HTTP_POST, [](AsyncWebServerRequest *request) {
@@ -173,12 +177,22 @@ void handleInfo(AsyncWebServerRequest *request) {
 }
 
 void handleMask(AsyncWebServerRequest *request) {
-    //
-    // TODO : récupérer les valeurs et assigner chaque valeur dans le masque correspondant
-    //
-    //
-    request->send(200, "text/plain", "Mask");
-    //
+    if (request->hasParam("ids", true)) {
+        //
+        request->getParam("ids", true);
+        //
+        //
+        //[]
+        //[1=1,2=0,3=1]
+        //[1=[1=1,5=0,6=1],2=[2=1,3=1,4=0]]
+        //[1=1,2=[1=0,2=1,3=0],3=...]
+        //
+        request->send(200, "text/plain", "mask");
+        //
+    }
+    else {
+        request->send(400, "text/plain", "bad syntax for the mask");
+    }
 }
 
 void handleShow(Perimetre perimetre, AsyncWebServerRequest *request) {
@@ -186,19 +200,20 @@ void handleShow(Perimetre perimetre, AsyncWebServerRequest *request) {
     short taille = 0;
     switch (perimetre) {
         case PR_TOTAL:
-            if (request->hasParam("bandeau_ids")) {
+            if (request->hasParam("bandeau_ids", true)) {
                 // si le parametre bandeau_ids existe, alors il faut parser la chaine de la request et en faire un tableau de short
-                taille = split_short(request->getParam("bandeau_ids"), bandeaux);
+                taille = split_short(request->getParam("bandeau_ids", true), bandeaux);
             }
             else {
                 // si bandeau_ids inexistant, bandeaux doit etre sette avec une boucle
                 taille = NB_BANDEAUX;
-                for (int i = 0; i<NB_BANDEAUX; ++i) {
-                    bandeaux[i] = i;
-                }
+                init_bandeaux_tab(bandeaux);
             }
             break;
-            //
+        case PR_GLYPHE:
+        case PR_CHEVRON:
+        case PR_HORIZON:
+            break;
     }
     funDAO_show(taille, bandeaux);
     FastLED.show();
@@ -206,9 +221,17 @@ void handleShow(Perimetre perimetre, AsyncWebServerRequest *request) {
 }
 
 void handleRaz(Perimetre perimetre, AsyncWebServerRequest *request) {
-    //
-    request->send(200, "text/plain", "Info");
-    //
+    short bandeaux[NB_BANDEAUX] = {0};
+    short taille = 0;
+    if (request->hasParam("bandeau_ids", true)) {
+      taille = split_short(request->getParam("bandeau_ids", true), bandeaux);
+    }
+    else {
+      taille = NB_BANDEAUX;
+      init_bandeaux_tab(bandeaux);
+    }
+    funDAO_raz(taille, bandeaux);
+    request->send(200, "text/plain", "raz");
 }
 
 void handleCouleur(Perimetre perimetre, AsyncWebServerRequest *request) {
@@ -249,30 +272,39 @@ void initSwitchLED_WS2812(int i) {
 }
 
 void funDAO_show(short taille, short ids[NB_BANDEAUX]) {
-    // la fonction prend un ou plusieurs bandeaux, et transmet la couleur préparée dans bandeaux[x].prepa_leds à bandeaux[x].leds
-    for (short i = 0; i<taille; ++i) {
-        for (short j = 0; j<bandeaux[ids[i]].nbleds; ++j) {
-            if (bandeaux[ids[i]].mask[j]) {
-                bandeaux[ids[i]].leds[j] = bandeaux[ids[i]].prepa_leds[j];
-            }
-            else {
-                bandeaux[ids[i]].leds[j] = CRGB::Black;
-            }
-        }
+  // la fonction prend un ou plusieurs bandeaux, et transmet la couleur préparée dans bandeaux[x].prepa_leds à bandeaux[x].leds
+  for (short i = 0; i<taille; ++i) {
+    for (short j = 0; j<bandeaux[ids[i]].nbleds; ++j) {
+      if (bandeaux[ids[i]].mask[j]) {
+        bandeaux[ids[i]].leds[j] = bandeaux[ids[i]].prepa_leds[j];
+      }
+      else {
+        bandeaux[ids[i]].leds[j] = CRGB::Black;
+      }
     }
+  }
+}
+
+void funDAO_raz(short taille, short ids[NB_BANDEAUX]) {
+  // la fonction remet le(s) tableau(x) de préparation à zéro, en reprenant la configuration par défaut
+  for (short i = 0; i<taille;++i) {
+    for (short j = 0;j<bandeaux[ids[i]].nbleds;++j) {
+      bandeaux[i].prepa_leds[j] = default_bandeaux[i][j];
+    }
+  }
 }
 
 // ##### CONTROLS HELPERS
 
 bool check_delay(int delay_time) {
-    //
-    // TODO : check for interruption
-    //
-    delay(delay_time);
-    //
-    // TODO : check for interruption
-    //
-    return true;
+  //
+  // TODO : check for interruption
+  //
+  delay(delay_time);
+  //
+  // TODO : check for interruption
+  //
+  return true;
 }
 
 // ### CLASSES #########################
@@ -289,10 +321,8 @@ void setup() {
       bandeaux[i].prepa_leds = (CRGB*) malloc(bandeaux[i].nbleds*sizeof(CRGB));
       bandeaux[i].leds = (CRGB*) malloc(bandeaux[i].nbleds*sizeof(CRGB));
       for (int j = 0; j < bandeaux[i].nbleds; ++j) {
-        //
-        // TODO : à sortir en fonction (RAZ)
+        bandeaux[i].mask[j] = false;
         bandeaux[i].prepa_leds[j] = default_bandeaux[i][j];
-        //
         bandeaux[i].leds[j] = CRGB::Black;
       }
       switch (bandeaux[i].type) {
